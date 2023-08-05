@@ -1,33 +1,20 @@
 const path = require("path");
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const ESLintPlugin = require("eslint-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const HTMLWebpackPlugin = require("html-webpack-plugin");
+const ESLintWebpackPlugin = require("eslint-webpack-plugin");
 
-let mode = "development";
-let target = "web";
 const plugins = [
   new CleanWebpackPlugin(),
   new MiniCssExtractPlugin(),
-  new ESLintPlugin(),
-  new HTMLWebpackPlugin({
+  new ESLintWebpackPlugin(),
+  new HtmlWebpackPlugin({
     template: "./src/index.html",
   }),
 ];
 
-if (process.env.NODE_ENV === "production") {
-  mode = "production";
-  // Temporary workaround for 'browserslist' bug that is being patched in the near future
-  target = "browserslist";
-}
-
-if (process.env.SERVE) {
-  // We only want React Hot Reloading in serve mode
-  plugins.push(new ReactRefreshWebpackPlugin());
-}
-
 module.exports = {
+  entry: "./src/index.js",
   module: {
     rules: [
       {
@@ -73,44 +60,15 @@ module.exports = {
          * with a default max inline size of 8kb
          */
         type: "asset",
-
-        /**
-         * If you want to inline larger images, you can set
-         * a custom `maxSize` for inline like so:
-         */
-        // parser: {
-        //   dataUrlCondition: {
-        //     maxSize: 30 * 1024,
-        //   },
-        // },
       },
     ],
   },
   resolve: {
     extensions: [".js", ".jsx"],
   },
-
-  mode,
-  target,
   plugins,
-
-  // This is unnecessary in Webpack 5, because it's the default.
-  // However, react-refresh-webpack-plugin can't find the entry without it.
-  entry: "./src/index.js",
-
   output: {
-    // output path is required for `clean-webpack-plugin`
-    path: path.resolve(__dirname, "dist"),
-    // this places all images processed in an image folder
+    path: path.resolve(__dirname, "..", "dist"),
     assetModuleFilename: "images/[hash][ext][query]",
-  },
-
-  devtool: "source-map",
-
-  devServer: {
-    static: path.join(__dirname, "dist"),
-    compress: true,
-    port: 9000,
-    hot: true,
   },
 };
