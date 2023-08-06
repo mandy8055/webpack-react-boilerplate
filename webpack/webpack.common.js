@@ -6,7 +6,9 @@ const ESLintWebpackPlugin = require("eslint-webpack-plugin");
 
 const plugins = [
   new CleanWebpackPlugin(),
-  new MiniCssExtractPlugin(),
+  new MiniCssExtractPlugin({
+    filename: "[contenthash].[name].css",
+  }),
   new ESLintWebpackPlugin(),
   new HtmlWebpackPlugin({
     template: "./src/index.html",
@@ -56,7 +58,7 @@ module.exports = {
          * and "file-loader" in Webpack 5.
          *
          * setting `type` to "asset" will automatically pick between
-         * outputing images to a file, or inlining them in the bundle as base64
+         * outputting images to a file, or inlining them in the bundle as base64
          * with a default max inline size of 8kb
          */
         type: "asset",
@@ -68,6 +70,7 @@ module.exports = {
   },
   plugins,
   output: {
+    filename: "[contenthash].bundle.js",
     path: path.resolve(__dirname, "..", "dist"),
     assetModuleFilename: "images/[hash][ext][query]",
   },
